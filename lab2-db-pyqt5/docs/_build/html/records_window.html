@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>records_window module &#8212; School Management System 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-records_window">
+<span id="records-window-module"></span><h1>records_window module<a class="headerlink" href="#module-records_window" title="Link to this heading">¶</a></h1>
+<p>records_window.py</p>
+<p>This module contains the records tab for displaying and managing all records in the system.</p>
+<p>Functions:
+- create_records_tab</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="records_window.EditCourseDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">records_window.</span></span><span class="sig-name descname"><span class="pre">EditCourseDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">course</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instructors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditCourseDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditCourseDialog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<p>Dialog for editing a Course’s information.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditCourseDialog.assign_instructor">
+<span class="sig-name descname"><span class="pre">assign_instructor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditCourseDialog.assign_instructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditCourseDialog.assign_instructor" title="Link to this definition">¶</a></dt>
+<dd><p>Assigns the selected instructor to the course.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditCourseDialog.init_ui">
+<span class="sig-name descname"><span class="pre">init_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditCourseDialog.init_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditCourseDialog.init_ui" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditCourseDialog.save_changes">
+<span class="sig-name descname"><span class="pre">save_changes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditCourseDialog.save_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditCourseDialog.save_changes" title="Link to this definition">¶</a></dt>
+<dd><p>Saves the changes made to the course’s information to the database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditCourseDialog.update_instructor_combobox">
+<span class="sig-name descname"><span class="pre">update_instructor_combobox</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditCourseDialog.update_instructor_combobox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditCourseDialog.update_instructor_combobox" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the instructors combobox with the latest instructors from the database.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="records_window.EditInstructorDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">records_window.</span></span><span class="sig-name descname"><span class="pre">EditInstructorDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instructor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">courses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditInstructorDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditInstructorDialog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<p>Dialog for editing an Instructor’s information.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditInstructorDialog.add_course">
+<span class="sig-name descname"><span class="pre">add_course</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditInstructorDialog.add_course"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditInstructorDialog.add_course" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a selected course to the instructor’s assigned courses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditInstructorDialog.init_ui">
+<span class="sig-name descname"><span class="pre">init_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditInstructorDialog.init_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditInstructorDialog.init_ui" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditInstructorDialog.remove_selected_course">
+<span class="sig-name descname"><span class="pre">remove_selected_course</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditInstructorDialog.remove_selected_course"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditInstructorDialog.remove_selected_course" title="Link to this definition">¶</a></dt>
+<dd><p>Removes the selected course from the instructor’s assigned courses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditInstructorDialog.save_changes">
+<span class="sig-name descname"><span class="pre">save_changes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditInstructorDialog.save_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditInstructorDialog.save_changes" title="Link to this definition">¶</a></dt>
+<dd><p>Saves the changes made to the instructor’s information to the database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditInstructorDialog.update_courses_combobox">
+<span class="sig-name descname"><span class="pre">update_courses_combobox</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditInstructorDialog.update_courses_combobox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditInstructorDialog.update_courses_combobox" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the courses combobox with the latest courses from the database.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="records_window.EditStudentDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">records_window.</span></span><span class="sig-name descname"><span class="pre">EditStudentDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">student</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">courses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditStudentDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditStudentDialog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<p>Dialog for editing a Student’s information.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditStudentDialog.add_course">
+<span class="sig-name descname"><span class="pre">add_course</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditStudentDialog.add_course"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditStudentDialog.add_course" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a selected course to the student’s registered courses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditStudentDialog.init_ui">
+<span class="sig-name descname"><span class="pre">init_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditStudentDialog.init_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditStudentDialog.init_ui" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditStudentDialog.remove_selected_course">
+<span class="sig-name descname"><span class="pre">remove_selected_course</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditStudentDialog.remove_selected_course"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditStudentDialog.remove_selected_course" title="Link to this definition">¶</a></dt>
+<dd><p>Removes the selected course from the student’s registered courses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditStudentDialog.save_changes">
+<span class="sig-name descname"><span class="pre">save_changes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditStudentDialog.save_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditStudentDialog.save_changes" title="Link to this definition">¶</a></dt>
+<dd><p>Saves the changes made to the student’s information to the database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="records_window.EditStudentDialog.update_courses_combobox">
+<span class="sig-name descname"><span class="pre">update_courses_combobox</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#EditStudentDialog.update_courses_combobox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.EditStudentDialog.update_courses_combobox" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the courses combobox with the latest courses from the database.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="records_window.create_records_tab">
+<span class="sig-prename descclassname"><span class="pre">records_window.</span></span><span class="sig-name descname"><span class="pre">create_records_tab</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/records_window.html#create_records_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#records_window.create_records_tab" title="Link to this definition">¶</a></dt>
+<dd><p>Creates the records tab widget with functionalities to display, edit, and delete records.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The records tab widget.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>QWidget</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">School Management System</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Mahmoud Yamani.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/records_window.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

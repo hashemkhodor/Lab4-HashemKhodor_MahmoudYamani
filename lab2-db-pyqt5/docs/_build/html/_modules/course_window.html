@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>course_window &#8212; School Management System 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for course_window</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">course_window.py</span>
+
+<span class="sd">This module contains the course form for adding new courses to the system.</span>
+
+<span class="sd">Functions:</span>
+<span class="sd">- create_course_form</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">QWidget</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span>
+    <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QMessageBox</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">Course</span>
+<span class="kn">from</span> <span class="nn">database</span> <span class="kn">import</span> <span class="n">add_course</span><span class="p">,</span> <span class="n">get_instructors</span>
+
+<div class="viewcode-block" id="create_course_form">
+<a class="viewcode-back" href="../course_window.html#course_window.create_course_form">[docs]</a>
+<span class="k">def</span> <span class="nf">create_course_form</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the course form widget.</span>
+
+<span class="sd">    :return: The course form widget.</span>
+<span class="sd">    :rtype: QWidget</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">course_tab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+    <span class="c1"># course ID Input</span>
+    <span class="n">course_id_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Course ID:&quot;</span><span class="p">)</span>
+    <span class="n">course_id_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+    <span class="n">course_id_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+    <span class="n">course_id_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">course_id_label</span><span class="p">)</span>
+    <span class="n">course_id_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">course_id_input</span><span class="p">)</span>
+    <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">course_id_layout</span><span class="p">)</span>
+
+    <span class="c1"># course Name Input</span>
+    <span class="n">course_name_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Course Name:&quot;</span><span class="p">)</span>
+    <span class="n">course_name_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+    <span class="n">course_name_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+    <span class="n">course_name_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">course_name_label</span><span class="p">)</span>
+    <span class="n">course_name_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">course_name_input</span><span class="p">)</span>
+    <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">course_name_layout</span><span class="p">)</span>
+
+    <span class="c1"># ComboBox for instructor</span>
+    <span class="n">instructor_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Instructor:&quot;</span><span class="p">)</span>
+    <span class="n">instructor_combobox</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+    <span class="n">refresh_instructors_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Refresh Instructors&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">update_instructor_combobox</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the instructors available in the combo box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">instructors</span> <span class="o">=</span> <span class="n">get_instructors</span><span class="p">()</span>
+        <span class="n">instructor_list</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">.</span><span class="n">instructor_id</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">i</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">instructors</span><span class="p">]</span>
+        <span class="n">instructor_combobox</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">instructor_combobox</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">instructor_list</span><span class="p">)</span>
+
+    <span class="n">update_instructor_combobox</span><span class="p">()</span>
+    <span class="n">refresh_instructors_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">update_instructor_combobox</span><span class="p">)</span>
+    <span class="n">instructor_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+    <span class="n">instructor_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">instructor_label</span><span class="p">)</span>
+    <span class="n">instructor_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">instructor_combobox</span><span class="p">)</span>
+    <span class="n">instructor_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">refresh_instructors_button</span><span class="p">)</span>
+    <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">instructor_layout</span><span class="p">)</span>
+
+    <span class="c1"># add course button</span>
+    <span class="k">def</span> <span class="nf">add_course_to_db</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds the course to the database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">course_id</span> <span class="o">=</span> <span class="n">course_id_input</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="n">course_name</span> <span class="o">=</span> <span class="n">course_name_input</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="n">instructor_id_text</span> <span class="o">=</span> <span class="n">instructor_combobox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+        <span class="n">instructor</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">get_instructors</span><span class="p">()</span> <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">.</span><span class="n">instructor_id</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">i</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="n">instructor_id_text</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">instructor</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">course_tab</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Instructor not found!&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">course</span> <span class="o">=</span> <span class="n">Course</span><span class="p">(</span><span class="n">course_id</span><span class="p">,</span> <span class="n">course_name</span><span class="p">,</span> <span class="n">instructor</span><span class="p">)</span>
+            <span class="n">add_course</span><span class="p">(</span><span class="n">course</span><span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="n">course_tab</span><span class="p">,</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span> <span class="s2">&quot;Course added successfully!&quot;</span><span class="p">)</span>
+            <span class="n">course_id_input</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">course_name_input</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">instructor_combobox</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">course_tab</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="n">add_course_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Add Course&quot;</span><span class="p">)</span>
+    <span class="n">add_course_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">add_course_to_db</span><span class="p">)</span>
+    <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">add_course_button</span><span class="p">)</span>
+
+    <span class="n">course_tab</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">course_tab</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">School Management System</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Mahmoud Yamani.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
