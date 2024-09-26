@@ -48,6 +48,33 @@ The **School Management System** is a desktop-based GUI application developed us
 
 ### PyQt5
 
+#### Steps
+1. **Navigate to the project directory:**
+   ```bash
+   cd pyqt5
+   ```
+
+2. **Create and activate a virtual environment:**
+   - On Windows:
+     ```bash
+     py -3.11 -m venv venv
+     venv\scripts\activate
+     ```
+   - On Unix or MacOS:
+     ```bash
+     python3 -m venv venv
+     source venv/bin/activate
+     ```
+
+3. **Install required dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Run the application:**
+   ```bash
+   python main_app.py
+   ```
 
 ### Tkinter
 
