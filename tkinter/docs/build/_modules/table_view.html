@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>table_view &mdash; University Management System 00.00.01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d7bb8d4d"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            University Management System
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">University Management System</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">table_view</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for table_view</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">from</span> <span class="nn">src.action_handler</span> <span class="kn">import</span> <span class="n">ActionHandler</span>
+<span class="kn">from</span> <span class="nn">src.forms.edit_course</span> <span class="kn">import</span> <span class="n">EditCourseForm</span>
+<span class="kn">from</span> <span class="nn">src.forms.edit_person</span> <span class="kn">import</span> <span class="n">EditPersonForm</span>
+<span class="kn">from</span> <span class="nn">src.schemas</span> <span class="kn">import</span> <span class="n">Student</span><span class="p">,</span> <span class="n">Instructor</span><span class="p">,</span> <span class="n">Course</span>
+
+
+<div class="viewcode-block" id="TableView">
+<a class="viewcode-back" href="../table_view.html#table_view.TableView">[docs]</a>
+<span class="k">class</span> <span class="nc">TableView</span><span class="p">(</span><span class="n">ttk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A table view for displaying students, instructors, and courses in a Tkinter application.</span>
+
+<span class="sd">    This class allows for filtering and editing of records.</span>
+
+<span class="sd">    :param title: The title of the table view.</span>
+<span class="sd">    :type title: str</span>
+<span class="sd">    :param students: A dictionary of students, keyed by their IDs.</span>
+<span class="sd">    :type students: dict[str, Student]</span>
+<span class="sd">    :param instructors: A dictionary of instructors, keyed by their IDs.</span>
+<span class="sd">    :type instructors: dict[str, Instructor]</span>
+<span class="sd">    :param courses: A dictionary of courses, keyed by their IDs.</span>
+<span class="sd">    :type courses: dict[str, Course]</span>
+<span class="sd">    :param callback: A callback function to be executed after actions.</span>
+<span class="sd">    :type callback: callable</span>
+<span class="sd">    :param action_handler: An instance of ActionHandler to manage actions.</span>
+<span class="sd">    :type action_handler: ActionHandler</span>
+<span class="sd">    :param args: Additional positional arguments for the parent class.</span>
+<span class="sd">    :param kwargs: Additional keyword arguments for the parent class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">students</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Student</span><span class="p">],</span> <span class="n">instructors</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Instructor</span><span class="p">],</span>
+                 <span class="n">courses</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Course</span><span class="p">],</span> <span class="n">callback</span><span class="p">,</span> <span class="n">action_handler</span><span class="p">:</span> <span class="n">ActionHandler</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+
+        <span class="c1"># Filter Vars</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_vars</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">(),</span>
+            <span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_labels</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;ID Label&quot;</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">(),</span>
+            <span class="s2">&quot;Name Label&quot;</span><span class="p">:</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;Student&quot;</span><span class="p">,</span> <span class="s2">&quot;Instructor&quot;</span><span class="p">,</span> <span class="s2">&quot;Course&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Student&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_handler</span><span class="p">:</span> <span class="n">ActionHandler</span> <span class="o">=</span> <span class="n">action_handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">students</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Student</span><span class="p">]</span> <span class="o">=</span> <span class="n">students</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">instructors</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Instructor</span><span class="p">]</span> <span class="o">=</span> <span class="n">instructors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">courses</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Course</span><span class="p">]</span> <span class="o">=</span> <span class="n">courses</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="p">:</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Treeview</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Treeview</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Display Students&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">display_student</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Display Instructors&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">display_instructor</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Display Courses&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">display_course</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_person</span><span class="p">(</span><span class="n">is_student</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_course</span><span class="p">()</span>
+
+        <span class="c1"># Filters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_frame</span><span class="p">:</span> <span class="n">ttk</span><span class="o">.</span><span class="n">LabelFrame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Filters&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_frame</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;nsew&quot;</span><span class="p">)</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_vars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">var</span><span class="o">.</span><span class="n">trace_add</span><span class="p">(</span><span class="s2">&quot;write&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_filter_change</span><span class="p">)</span>
+            <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_frame</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter_labels</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> Label&quot;</span><span class="p">]</span>
+                      <span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">column</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+            <span class="n">ttk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_frame</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">column</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+            <span class="n">column</span> <span class="o">+=</span> <span class="mi">2</span>
+
+            <span class="c1"># Bind a click event to the &quot;Action&quot; column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Button-1&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_treeview_click</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TableView.on_treeview_click">
+<a class="viewcode-back" href="../table_view.html#table_view.TableView.on_treeview_click">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_treeview_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detects when a user clicks the &#39;Action&#39; column and performs an action which is to create popoff window for updating content.</span>
+
+<span class="sd">        :param event: The event object containing information about the click event.</span>
+<span class="sd">        :type event: tk.Event</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the region where the click occurred</span>
+        <span class="n">region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">identify_region</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">identify_column</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">row_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">identify_row</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">region</span> <span class="o">==</span> <span class="s2">&quot;cell&quot;</span><span class="p">:</span>
+            <span class="c1"># MyDialog(parent=self)</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Student&quot;</span><span class="p">,</span> <span class="s2">&quot;Instructor&quot;</span><span class="p">):</span>
+                <span class="n">person_id</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">person_id</span><span class="p">)</span>
+                <span class="n">EditPersonForm</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="n">is_student</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="o">==</span> <span class="s2">&quot;Student&quot;</span><span class="p">,</span> <span class="n">students</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">students</span><span class="p">,</span>
+                               <span class="n">instructors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instructors</span><span class="p">,</span>
+                               <span class="n">courses</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">courses</span><span class="p">,</span> <span class="n">person_id</span><span class="o">=</span><span class="n">person_id</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+                               <span class="n">action_handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_handler</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="o">==</span> <span class="s2">&quot;Course&quot;</span><span class="p">:</span>
+                <span class="n">course_id</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">EditCourseForm</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="n">course_id</span><span class="o">=</span><span class="n">course_id</span><span class="p">,</span> <span class="n">instructors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instructors</span><span class="p">,</span>
+                               <span class="n">students</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">students</span><span class="p">,</span> <span class="n">courses</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">courses</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+                               <span class="n">action_handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_handler</span><span class="p">)</span></div>
+
+            <span class="c1"># print(f&quot;Button clicked in row with ID: {item[&#39;values&#39;][0]} - Name: {item[&#39;values&#39;][1]}&quot;)</span>
+            <span class="c1"># You can trigger any action here, e.g., opening a new window, updating data, etc.</span>
+
+<div class="viewcode-block" id="TableView.on_filter_change">
+<a class="viewcode-back" href="../table_view.html#table_view.TableView.on_filter_change">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_filter_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called whenever a filter value changes, refreshing the displayed records.</span>
+
+<span class="sd">        :param var_name: The name of the variable that changed.</span>
+<span class="sd">        :type var_name: str</span>
+<span class="sd">        :param index: The index of the variable that changed.</span>
+<span class="sd">        :type index: int</span>
+<span class="sd">        :param mode: The mode of the change.</span>
+<span class="sd">        :type mode: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># for key, val in self._filter_vars.items():</span>
+        <span class="c1">#     print(f&quot;Filter {key}: {val.get()}&quot;)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="o">==</span> <span class="s2">&quot;Student&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_student</span><span class="p">(</span><span class="n">keep_filters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="o">==</span> <span class="s2">&quot;Instructor&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_instructor</span><span class="p">(</span><span class="n">keep_filters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="o">==</span> <span class="s2">&quot;Course&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_course</span><span class="p">(</span><span class="n">keep_filters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TableView.display_student">
+<a class="viewcode-back" href="../table_view.html#table_view.TableView.display_student">[docs]</a>
+    <span class="k">def</span> <span class="nf">display_student</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_filters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Displays the student records in the tree view.</span>
+
+<span class="sd">        :param keep_filters: Flag indicating whether to keep the current filters.</span>
+<span class="sd">        :type keep_filters: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_filters</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_filters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_labels</span><span class="p">[</span><span class="s2">&quot;ID Label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Student ID Filter&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_labels</span><span class="p">[</span><span class="s2">&quot;Name Label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Student Name Filter&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="o">=</span> <span class="s2">&quot;Student&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_person</span><span class="p">(</span><span class="n">is_student</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TableView.display_instructor">
+<a class="viewcode-back" href="../table_view.html#table_view.TableView.display_instructor">[docs]</a>
+    <span class="k">def</span> <span class="nf">display_instructor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_filters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Displays the instructor records in the tree view.</span>
+
+<span class="sd">        :param keep_filters: Flag indicating whether to keep the current filters.</span>
+<span class="sd">        :type keep_filters: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_filters</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_filters</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_labels</span><span class="p">[</span><span class="s2">&quot;ID Label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Instructor ID Filter&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_labels</span><span class="p">[</span><span class="s2">&quot;Name Label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Instructor Name Filter&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="o">=</span> <span class="s2">&quot;Instructor&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_person</span><span class="p">(</span><span class="n">is_student</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TableView.clear_filters">
+<a class="viewcode-back" href="../table_view.html#table_view.TableView.clear_filters">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_vars</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TableView.display_person">
+<a class="viewcode-back" href="../table_view.html#table_view.TableView.display_person">[docs]</a>
+    <span class="k">def</span> <span class="nf">display_person</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_student</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Displays either student or instructor records based on the is_student flag.</span>
+
+<span class="sd">        :param is_student: Flag indicating whether to display students (True) or instructors (False).</span>
+<span class="sd">        :type is_student: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">ID_FILTER</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_vars</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">NAME_FILTER</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_vars</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Student&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_student</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;Instructor&#39;</span><span class="si">}</span><span class="s2"> ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Age&quot;</span><span class="p">,</span> <span class="s2">&quot;Email&quot;</span><span class="p">,</span>
+                   <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Registered&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_student</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;Assigned&#39;</span><span class="si">}</span><span class="s2"> Courses&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="p">[</span><span class="s1">&#39;columns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">headers</span>
+        <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">person</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">students</span> <span class="k">if</span> <span class="n">is_student</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">instructors</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">to_treeview_record</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ID_FILTER</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ID_FILTER</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">NAME_FILTER</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">NAME_FILTER</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">content</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">continue</span>
+
+            <span class="n">row</span> <span class="o">=</span> <span class="n">content</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],)</span>
+            <span class="n">child_rows</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">child_rows</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">course</span><span class="p">,)</span> <span class="k">for</span> <span class="n">course</span> <span class="ow">in</span> <span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]]</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">row</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">child_rows</span><span class="p">:</span>
+                <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">child</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TableView.display_course">
+<a class="viewcode-back" href="../table_view.html#table_view.TableView.display_course">[docs]</a>
+    <span class="k">def</span> <span class="nf">display_course</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_filters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Displays the course records in the tree view.</span>
+
+<span class="sd">        :param keep_filters: Flag indicating whether to keep the current filters.</span>
+<span class="sd">        :type keep_filters: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="o">=</span> <span class="s2">&quot;Course&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_filters</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_filters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_labels</span><span class="p">[</span><span class="s2">&quot;ID Label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Course ID Filter&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_labels</span><span class="p">[</span><span class="s2">&quot;Name Label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Course Name Filter&quot;</span><span class="p">)</span>
+
+        <span class="n">ID_FILTER</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_vars</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">NAME_FILTER</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_vars</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Course ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Course Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Instructor ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Enrolled Students&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="p">[</span><span class="s1">&#39;columns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">headers</span>
+        <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">course</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">courses</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">course</span><span class="o">.</span><span class="n">to_treeview_record</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ID_FILTER</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ID_FILTER</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">NAME_FILTER</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">NAME_FILTER</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">content</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">continue</span>
+
+            <span class="n">row</span> <span class="o">=</span> <span class="n">content</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],)</span>
+            <span class="n">child_rows</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">child_rows</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">course</span><span class="p">,)</span> <span class="k">for</span> <span class="n">course</span> <span class="ow">in</span> <span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]]</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">row</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">child_rows</span><span class="p">:</span>
+                <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_view</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">child</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Hashem Khodor.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

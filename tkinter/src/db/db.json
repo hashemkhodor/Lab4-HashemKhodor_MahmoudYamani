@@ -1,0 +1,48 @@
+{
+    "courses": {
+        "eece435L": {
+            "course_id": "eece435L",
+            "course_name": "Software Engineering Lab",
+            "instructor_id": "iman",
+            "enrolled_students": [
+                "hashem"
+            ]
+        }
+    },
+    "students": {
+        "hashem": {
+            "name": "Hashem Khodor",
+            "age": 21,
+            "email": "hmk57@mail.aub.edu",
+            "student_id": "hashem",
+            "registered_courses": [
+                "eece435L"
+            ]
+        },
+        "hashemo": {
+            "name": "khodoe",
+            "age": 21,
+            "email": "sadsad@gmail.com",
+            "student_id": "hashemo",
+            "registered_courses": []
+        },
+        "hasdahs": {
+            "name": "qwdqwde",
+            "age": 12,
+            "email": "1232@gmail.com",
+            "student_id": "hasdahs",
+            "registered_courses": []
+        }
+    },
+    "instructors": {
+        "iman": {
+            "name": "iman-gh",
+            "age": 30,
+            "email": "iman2@gmail.com",
+            "instructor_id": "iman",
+            "assigned_courses": [
+                "eece435L"
+            ]
+        }
+    }
+}
