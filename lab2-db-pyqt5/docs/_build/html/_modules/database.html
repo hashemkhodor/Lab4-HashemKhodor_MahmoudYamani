@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>database &#8212; School Management System 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for database</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">database.py</span>
+
+<span class="sd">This module handles all database interactions, including CRUD operations and database backup.</span>
+
+<span class="sd">Functions:</span>
+<span class="sd">- create_connection</span>
+<span class="sd">- create_tables</span>
+<span class="sd">- add_student</span>
+<span class="sd">- get_students</span>
+<span class="sd">- update_student</span>
+<span class="sd">- delete_student</span>
+<span class="sd">- add_instructor</span>
+<span class="sd">- get_instructors</span>
+<span class="sd">- update_instructor</span>
+<span class="sd">- delete_instructor</span>
+<span class="sd">- add_course</span>
+<span class="sd">- get_courses</span>
+<span class="sd">- update_course</span>
+<span class="sd">- delete_course</span>
+<span class="sd">- add_registration</span>
+<span class="sd">- get_student_courses</span>
+<span class="sd">- remove_registration</span>
+<span class="sd">- backup_database</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">Student</span><span class="p">,</span> <span class="n">Instructor</span><span class="p">,</span> <span class="n">Course</span>
+
+<span class="n">DB_PATH</span> <span class="o">=</span> <span class="s1">&#39;school_management.db&#39;</span>
+
+<div class="viewcode-block" id="create_connection">
+<a class="viewcode-back" href="../database.html#database.create_connection">[docs]</a>
+<span class="k">def</span> <span class="nf">create_connection</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a connection to the SQLite database.</span>
+
+<span class="sd">    :return: SQLite connection object.</span>
+<span class="sd">    :rtype: sqlite3.Connection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">DB_PATH</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_tables">
+<a class="viewcode-back" href="../database.html#database.create_tables">[docs]</a>
+<span class="k">def</span> <span class="nf">create_tables</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the necessary tables in the database if they do not exist.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+    <span class="c1"># create students table</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        CREATE TABLE IF NOT EXISTS students (</span>
+<span class="s1">            student_id TEXT PRIMARY KEY,</span>
+<span class="s1">            name TEXT NOT NULL,</span>
+<span class="s1">            age INTEGER NOT NULL,</span>
+<span class="s1">            email TEXT NOT NULL</span>
+<span class="s1">        )</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># create instructors table</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        CREATE TABLE IF NOT EXISTS instructors (</span>
+<span class="s1">            instructor_id TEXT PRIMARY KEY,</span>
+<span class="s1">            name TEXT NOT NULL,</span>
+<span class="s1">            age INTEGER NOT NULL,</span>
+<span class="s1">            email TEXT NOT NULL</span>
+<span class="s1">        )</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># create courses table</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        CREATE TABLE IF NOT EXISTS courses (</span>
+<span class="s1">            course_id TEXT PRIMARY KEY,</span>
+<span class="s1">            course_name TEXT NOT NULL,</span>
+<span class="s1">            instructor_id TEXT,</span>
+<span class="s1">            FOREIGN KEY(instructor_id) REFERENCES instructors(instructor_id)</span>
+<span class="s1">        )</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># create registrations table</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        CREATE TABLE IF NOT EXISTS registrations (</span>
+<span class="s1">            student_id TEXT,</span>
+<span class="s1">            course_id TEXT,</span>
+<span class="s1">            PRIMARY KEY (student_id, course_id),</span>
+<span class="s1">            FOREIGN KEY(student_id) REFERENCES students(student_id),</span>
+<span class="s1">            FOREIGN KEY(course_id) REFERENCES courses(course_id)</span>
+<span class="s1">        )</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span>
+
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="c1"># CRUD operations for students</span>
+<div class="viewcode-block" id="add_student">
+<a class="viewcode-back" href="../database.html#database.add_student">[docs]</a>
+<span class="k">def</span> <span class="nf">add_student</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a student to the database.</span>
+
+<span class="sd">    :param student: The student to add.</span>
+<span class="sd">    :type student: Student</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        INSERT INTO students (student_id, name, age, email)</span>
+<span class="s1">        VALUES (?, ?, ?, ?)</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">student</span><span class="o">.</span><span class="n">student_id</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">age</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">email</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_students">
+<a class="viewcode-back" href="../database.html#database.get_students">[docs]</a>
+<span class="k">def</span> <span class="nf">get_students</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves all students from the database.</span>
+
+<span class="sd">    :return: List of Student objects.</span>
+<span class="sd">    :rtype: list of Student</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM students&#39;</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">students</span> <span class="o">=</span> <span class="p">[</span><span class="n">Student</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">students</span></div>
+
+
+<div class="viewcode-block" id="update_student">
+<a class="viewcode-back" href="../database.html#database.update_student">[docs]</a>
+<span class="k">def</span> <span class="nf">update_student</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates a student&#39;s information in the database.</span>
+
+<span class="sd">    :param student: The student with updated information.</span>
+<span class="sd">    :type student: Student</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        UPDATE students</span>
+<span class="s1">        SET name = ?, age = ?, email = ?</span>
+<span class="s1">        WHERE student_id = ?</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">age</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">student_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="delete_student">
+<a class="viewcode-back" href="../database.html#database.delete_student">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_student</span><span class="p">(</span><span class="n">student_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes a student from the database.</span>
+
+<span class="sd">    :param student_id: The ID of the student to delete.</span>
+<span class="sd">    :type student_id: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        DELETE FROM students WHERE student_id = ?</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">student_id</span><span class="p">,))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="c1"># CRUD operations for instructors</span>
+<div class="viewcode-block" id="add_instructor">
+<a class="viewcode-back" href="../database.html#database.add_instructor">[docs]</a>
+<span class="k">def</span> <span class="nf">add_instructor</span><span class="p">(</span><span class="n">instructor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds an instructor to the database.</span>
+
+<span class="sd">    :param instructor: The instructor to add.</span>
+<span class="sd">    :type instructor: Instructor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        INSERT INTO instructors (instructor_id, name, age, email)</span>
+<span class="s1">        VALUES (?, ?, ?, ?)</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">instructor</span><span class="o">.</span><span class="n">instructor_id</span><span class="p">,</span> <span class="n">instructor</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">instructor</span><span class="o">.</span><span class="n">age</span><span class="p">,</span> <span class="n">instructor</span><span class="o">.</span><span class="n">email</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_instructors">
+<a class="viewcode-back" href="../database.html#database.get_instructors">[docs]</a>
+<span class="k">def</span> <span class="nf">get_instructors</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves all instructors from the database.</span>
+
+<span class="sd">    :return: List of Instructor objects.</span>
+<span class="sd">    :rtype: list of Instructor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM instructors&#39;</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">instructors</span> <span class="o">=</span> <span class="p">[</span><span class="n">Instructor</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">instructors</span></div>
+
+
+<div class="viewcode-block" id="update_instructor">
+<a class="viewcode-back" href="../database.html#database.update_instructor">[docs]</a>
+<span class="k">def</span> <span class="nf">update_instructor</span><span class="p">(</span><span class="n">instructor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates an instructor&#39;s information in the database.</span>
+
+<span class="sd">    :param instructor: The instructor with updated information.</span>
+<span class="sd">    :type instructor: Instructor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        UPDATE instructors</span>
+<span class="s1">        SET name = ?, age = ?, email = ?</span>
+<span class="s1">        WHERE instructor_id = ?</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">instructor</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">instructor</span><span class="o">.</span><span class="n">age</span><span class="p">,</span> <span class="n">instructor</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">instructor</span><span class="o">.</span><span class="n">instructor_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="delete_instructor">
+<a class="viewcode-back" href="../database.html#database.delete_instructor">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_instructor</span><span class="p">(</span><span class="n">instructor_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes an instructor from the database.</span>
+
+<span class="sd">    :param instructor_id: The ID of the instructor to delete.</span>
+<span class="sd">    :type instructor_id: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        DELETE FROM instructors WHERE instructor_id = ?</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">instructor_id</span><span class="p">,))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="c1"># CRUD operations for courses</span>
+<div class="viewcode-block" id="add_course">
+<a class="viewcode-back" href="../database.html#database.add_course">[docs]</a>
+<span class="k">def</span> <span class="nf">add_course</span><span class="p">(</span><span class="n">course</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a course to the database.</span>
+
+<span class="sd">    :param course: The course to add.</span>
+<span class="sd">    :type course: Course</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">instructor_id</span> <span class="o">=</span> <span class="n">course</span><span class="o">.</span><span class="n">instructor</span><span class="o">.</span><span class="n">instructor_id</span> <span class="k">if</span> <span class="n">course</span><span class="o">.</span><span class="n">instructor</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        INSERT INTO courses (course_id, course_name, instructor_id)</span>
+<span class="s1">        VALUES (?, ?, ?)</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">course</span><span class="o">.</span><span class="n">course_id</span><span class="p">,</span> <span class="n">course</span><span class="o">.</span><span class="n">course_name</span><span class="p">,</span> <span class="n">instructor_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_courses">
+<a class="viewcode-back" href="../database.html#database.get_courses">[docs]</a>
+<span class="k">def</span> <span class="nf">get_courses</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves all courses from the database.</span>
+
+<span class="sd">    :return: List of Course objects.</span>
+<span class="sd">    :rtype: list of Course</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM courses&#39;</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">instructors</span> <span class="o">=</span> <span class="n">get_instructors</span><span class="p">()</span>
+    <span class="n">courses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="n">instructor</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">instructors</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">instructor_id</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">course</span> <span class="o">=</span> <span class="n">Course</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">instructor</span><span class="p">)</span>
+        <span class="n">courses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">course</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">courses</span></div>
+
+
+<div class="viewcode-block" id="update_course">
+<a class="viewcode-back" href="../database.html#database.update_course">[docs]</a>
+<span class="k">def</span> <span class="nf">update_course</span><span class="p">(</span><span class="n">course</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates a course&#39;s information in the database.</span>
+
+<span class="sd">    :param course: The course with updated information.</span>
+<span class="sd">    :type course: Course</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">instructor_id</span> <span class="o">=</span> <span class="n">course</span><span class="o">.</span><span class="n">instructor</span><span class="o">.</span><span class="n">instructor_id</span> <span class="k">if</span> <span class="n">course</span><span class="o">.</span><span class="n">instructor</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        UPDATE courses</span>
+<span class="s1">        SET course_name = ?, instructor_id = ?</span>
+<span class="s1">        WHERE course_id = ?</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">course</span><span class="o">.</span><span class="n">course_name</span><span class="p">,</span> <span class="n">instructor_id</span><span class="p">,</span> <span class="n">course</span><span class="o">.</span><span class="n">course_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="delete_course">
+<a class="viewcode-back" href="../database.html#database.delete_course">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_course</span><span class="p">(</span><span class="n">course_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes a course from the database.</span>
+
+<span class="sd">    :param course_id: The ID of the course to delete.</span>
+<span class="sd">    :type course_id: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        DELETE FROM courses WHERE course_id = ?</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">course_id</span><span class="p">,))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="c1"># Registration operations</span>
+<div class="viewcode-block" id="add_registration">
+<a class="viewcode-back" href="../database.html#database.add_registration">[docs]</a>
+<span class="k">def</span> <span class="nf">add_registration</span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">course_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a registration entry for a student and a course.</span>
+
+<span class="sd">    :param student_id: The ID of the student.</span>
+<span class="sd">    :type student_id: str</span>
+<span class="sd">    :param course_id: The ID of the course.</span>
+<span class="sd">    :type course_id: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        INSERT INTO registrations (student_id, course_id)</span>
+<span class="s1">        VALUES (?, ?)</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">course_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_student_courses">
+<a class="viewcode-back" href="../database.html#database.get_student_courses">[docs]</a>
+<span class="k">def</span> <span class="nf">get_student_courses</span><span class="p">(</span><span class="n">student_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves all courses a student is registered in.</span>
+
+<span class="sd">    :param student_id: The ID of the student.</span>
+<span class="sd">    :type student_id: str</span>
+<span class="sd">    :return: List of course IDs.</span>
+<span class="sd">    :rtype: list of str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        SELECT course_id FROM registrations WHERE student_id = ?</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">student_id</span><span class="p">,))</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="remove_registration">
+<a class="viewcode-back" href="../database.html#database.remove_registration">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_registration</span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">course_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes a registration entry for a student and a course.</span>
+
+<span class="sd">    :param student_id: The ID of the student.</span>
+<span class="sd">    :type student_id: str</span>
+<span class="sd">    :param course_id: The ID of the course.</span>
+<span class="sd">    :type course_id: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">()</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        DELETE FROM registrations WHERE student_id = ? AND course_id = ?</span>
+<span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">course_id</span><span class="p">))</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="backup_database">
+<a class="viewcode-back" href="../database.html#database.backup_database">[docs]</a>
+<span class="k">def</span> <span class="nf">backup_database</span><span class="p">(</span><span class="n">backup_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Backs up the database to a specified file path.</span>
+
+<span class="sd">    :param backup_path: The path to save the backup.</span>
+<span class="sd">    :type backup_path: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">DB_PATH</span><span class="p">,</span> <span class="n">backup_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Database backed up to </span><span class="si">{</span><span class="n">backup_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error backing up database: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">School Management System</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Mahmoud Yamani.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

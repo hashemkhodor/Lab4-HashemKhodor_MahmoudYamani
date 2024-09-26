@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>lab2-db-pyqt5 &#8212; School Management System 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="lab2-db-pyqt5">
+<h1>lab2-db-pyqt5<a class="headerlink" href="#lab2-db-pyqt5" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="course_window.html">course_window module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="course_window.html#course_window.create_course_form"><code class="docutils literal notranslate"><span class="pre">create_course_form()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">database module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.add_course"><code class="docutils literal notranslate"><span class="pre">add_course()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.add_instructor"><code class="docutils literal notranslate"><span class="pre">add_instructor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.add_registration"><code class="docutils literal notranslate"><span class="pre">add_registration()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.add_student"><code class="docutils literal notranslate"><span class="pre">add_student()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.backup_database"><code class="docutils literal notranslate"><span class="pre">backup_database()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.create_connection"><code class="docutils literal notranslate"><span class="pre">create_connection()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.create_tables"><code class="docutils literal notranslate"><span class="pre">create_tables()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.delete_course"><code class="docutils literal notranslate"><span class="pre">delete_course()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.delete_instructor"><code class="docutils literal notranslate"><span class="pre">delete_instructor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.delete_student"><code class="docutils literal notranslate"><span class="pre">delete_student()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.get_courses"><code class="docutils literal notranslate"><span class="pre">get_courses()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.get_instructors"><code class="docutils literal notranslate"><span class="pre">get_instructors()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.get_student_courses"><code class="docutils literal notranslate"><span class="pre">get_student_courses()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.get_students"><code class="docutils literal notranslate"><span class="pre">get_students()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.remove_registration"><code class="docutils literal notranslate"><span class="pre">remove_registration()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.update_course"><code class="docutils literal notranslate"><span class="pre">update_course()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.update_instructor"><code class="docutils literal notranslate"><span class="pre">update_instructor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#database.update_student"><code class="docutils literal notranslate"><span class="pre">update_student()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="instructor_window.html">instructor_window module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="instructor_window.html#instructor_window.create_instructor_form"><code class="docutils literal notranslate"><span class="pre">create_instructor_form()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">main module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main.html#main.Course"><code class="docutils literal notranslate"><span class="pre">Course</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Course.add_student"><code class="docutils literal notranslate"><span class="pre">Course.add_student()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Course.from_dict"><code class="docutils literal notranslate"><span class="pre">Course.from_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Course.to_dict"><code class="docutils literal notranslate"><span class="pre">Course.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#main.Instructor"><code class="docutils literal notranslate"><span class="pre">Instructor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Instructor.assign_course"><code class="docutils literal notranslate"><span class="pre">Instructor.assign_course()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Instructor.from_dict"><code class="docutils literal notranslate"><span class="pre">Instructor.from_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Instructor.to_dict"><code class="docutils literal notranslate"><span class="pre">Instructor.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#main.Person"><code class="docutils literal notranslate"><span class="pre">Person</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Person.introduce"><code class="docutils literal notranslate"><span class="pre">Person.introduce()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Person.to_dict"><code class="docutils literal notranslate"><span class="pre">Person.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#main.Student"><code class="docutils literal notranslate"><span class="pre">Student</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Student.from_dict"><code class="docutils literal notranslate"><span class="pre">Student.from_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Student.register_course"><code class="docutils literal notranslate"><span class="pre">Student.register_course()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="main.html#main.Student.to_dict"><code class="docutils literal notranslate"><span class="pre">Student.to_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main_app.html">main_app module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main_app.html#main_app.MainWindow"><code class="docutils literal notranslate"><span class="pre">MainWindow</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main_app.html#main_app.MainWindow.backup_database"><code class="docutils literal notranslate"><span class="pre">MainWindow.backup_database()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="records_window.html">records_window module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="records_window.html#records_window.EditCourseDialog"><code class="docutils literal notranslate"><span class="pre">EditCourseDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditCourseDialog.assign_instructor"><code class="docutils literal notranslate"><span class="pre">EditCourseDialog.assign_instructor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditCourseDialog.init_ui"><code class="docutils literal notranslate"><span class="pre">EditCourseDialog.init_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditCourseDialog.save_changes"><code class="docutils literal notranslate"><span class="pre">EditCourseDialog.save_changes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditCourseDialog.update_instructor_combobox"><code class="docutils literal notranslate"><span class="pre">EditCourseDialog.update_instructor_combobox()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="records_window.html#records_window.EditInstructorDialog"><code class="docutils literal notranslate"><span class="pre">EditInstructorDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditInstructorDialog.add_course"><code class="docutils literal notranslate"><span class="pre">EditInstructorDialog.add_course()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditInstructorDialog.init_ui"><code class="docutils literal notranslate"><span class="pre">EditInstructorDialog.init_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditInstructorDialog.remove_selected_course"><code class="docutils literal notranslate"><span class="pre">EditInstructorDialog.remove_selected_course()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditInstructorDialog.save_changes"><code class="docutils literal notranslate"><span class="pre">EditInstructorDialog.save_changes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditInstructorDialog.update_courses_combobox"><code class="docutils literal notranslate"><span class="pre">EditInstructorDialog.update_courses_combobox()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="records_window.html#records_window.EditStudentDialog"><code class="docutils literal notranslate"><span class="pre">EditStudentDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditStudentDialog.add_course"><code class="docutils literal notranslate"><span class="pre">EditStudentDialog.add_course()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditStudentDialog.init_ui"><code class="docutils literal notranslate"><span class="pre">EditStudentDialog.init_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditStudentDialog.remove_selected_course"><code class="docutils literal notranslate"><span class="pre">EditStudentDialog.remove_selected_course()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditStudentDialog.save_changes"><code class="docutils literal notranslate"><span class="pre">EditStudentDialog.save_changes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="records_window.html#records_window.EditStudentDialog.update_courses_combobox"><code class="docutils literal notranslate"><span class="pre">EditStudentDialog.update_courses_combobox()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="records_window.html#records_window.create_records_tab"><code class="docutils literal notranslate"><span class="pre">create_records_tab()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="student_window.html">student_window module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="student_window.html#student_window.create_student_form"><code class="docutils literal notranslate"><span class="pre">create_student_form()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">School Management System</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Mahmoud Yamani.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
