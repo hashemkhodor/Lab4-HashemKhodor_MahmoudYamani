@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>db &mdash; University Management System 00.00.01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d7bb8d4d"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            University Management System
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">University Management System</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">db</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for db</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">src.schemas</span> <span class="kn">import</span> <span class="n">Student</span><span class="p">,</span> <span class="n">Instructor</span><span class="p">,</span> <span class="n">Course</span>
+
+
+<div class="viewcode-block" id="Table">
+<a class="viewcode-back" href="../db.html#db.Table">[docs]</a>
+<span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract base class for representing database tables.</span>
+
+<span class="sd">    :param db_path: Path to the SQLite database file.</span>
+<span class="sd">    :type db_path: str</span>
+
+<span class="sd">    :ivar db_path: The database path.</span>
+<span class="sd">    :vartype db_path: str</span>
+<span class="sd">    :ivar conn: The SQLite connection object.</span>
+<span class="sd">    :vartype conn: sqlite3.Connection</span>
+<span class="sd">    :ivar cursor: The SQLite cursor for executing SQL commands.</span>
+<span class="sd">    :vartype cursor: sqlite3.Cursor</span>
+
+<span class="sd">    :raises AssertionError: If the database path does not exist.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        - :meth:`delete_record`: Abstract method for deleting a record from the table.</span>
+<span class="sd">        - :meth:`create_table`: Abstract static method for creating the table in the database.</span>
+<span class="sd">        - :meth:`upsert_row`: Abstract method for inserting or updating a row in the table.</span>
+<span class="sd">        - :meth:`query`: Abstract method for querying records from the table.</span>
+<span class="sd">        - :meth:`close_connection`: Closes the database connection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a Table object and connects to the SQLite database.</span>
+
+<span class="sd">        :param db_path: Path to the SQLite database file.</span>
+<span class="sd">        :type db_path: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">db_path</span><span class="p">),</span> <span class="s2">&quot;Database path doesn&#39;t exist&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">db_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Table.delete_record">
+<a class="viewcode-back" href="../db.html#db.Table.delete_record">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">delete_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method for deleting a record from the table.</span>
+
+<span class="sd">        :raises NotImplementedError: If the method is not implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Please implement this method&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Table.create_table">
+<a class="viewcode-back" href="../db.html#db.Table.create_table">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract static method for creating the table in the database.</span>
+
+<span class="sd">        :param db_path: Path to the SQLite database file.</span>
+<span class="sd">        :type db_path: str</span>
+
+<span class="sd">        :raises NotImplementedError: If the method is not implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Please implement this method&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Table.upsert_row">
+<a class="viewcode-back" href="../db.html#db.Table.upsert_row">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">upsert_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method for inserting or updating a row in the table.</span>
+
+<span class="sd">        :param row: The row data to insert or update.</span>
+<span class="sd">        :type row: Any</span>
+
+<span class="sd">        :raises NotImplementedError: If the method is not implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Please implement this method&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Table.query">
+<a class="viewcode-back" href="../db.html#db.Table.query">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method for querying records from the table.</span>
+
+<span class="sd">        :returns: A list of query results.</span>
+<span class="sd">        :rtype: list[Any]</span>
+
+<span class="sd">        :raises NotImplementedError: If the method is not implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Please implement this method&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Table.close_connection">
+<a class="viewcode-back" href="../db.html#db.Table.close_connection">[docs]</a>
+    <span class="k">def</span> <span class="nf">close_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the database connection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PersonTable">
+<a class="viewcode-back" href="../db.html#db.PersonTable">[docs]</a>
+<span class="k">class</span> <span class="nc">PersonTable</span><span class="p">(</span><span class="n">Table</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class representing the Person table in the database, inheriting from Table.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        - :meth:`query`: Queries the Person table based on whether the person is a student or an instructor.</span>
+<span class="sd">        - :meth:`delete_record`: Deletes a record from the Person table.</span>
+<span class="sd">        - :meth:`upsert_row`: Inserts or updates a row in the Person table.</span>
+<span class="sd">        - :meth:`create_table`: Creates the Person table in the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a PersonTable object and connects to the SQLite database.</span>
+
+<span class="sd">        :param db_path: Path to the SQLite database file.</span>
+<span class="sd">        :type db_path: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">db_path</span><span class="o">=</span><span class="n">db_path</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PersonTable.query">
+<a class="viewcode-back" href="../db.html#db.PersonTable.query">[docs]</a>
+    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_student</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Student</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Instructor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Queries the Person table based on whether the person is a student or an instructor.</span>
+
+<span class="sd">        :param is_student: True to query students, False to query instructors.</span>
+<span class="sd">        :type is_student: bool</span>
+
+<span class="sd">        :returns: A dictionary mapping person IDs to Student or Instructor objects.</span>
+<span class="sd">        :rtype: dict[str, Student] | dict[str, Instructor]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SELECT * FROM Person WHERE is_student = </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">is_student</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">courses</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">is_student</span><span class="p">:</span>
+                <span class="n">person</span> <span class="o">=</span> <span class="n">Student</span><span class="p">(</span><span class="n">student_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">age</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">_email</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                <span class="n">person</span><span class="o">.</span><span class="n">registered_courses</span> <span class="o">=</span> <span class="n">courses</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">person</span> <span class="o">=</span> <span class="n">Instructor</span><span class="p">(</span><span class="n">instructor_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">age</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">_email</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                <span class="n">person</span><span class="o">.</span><span class="n">assigned_courses</span> <span class="o">=</span> <span class="n">courses</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">get_id</span><span class="p">()]</span> <span class="o">=</span> <span class="n">person</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="PersonTable.delete_record">
+<a class="viewcode-back" href="../db.html#db.PersonTable.delete_record">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">person_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a record from the Person table.</span>
+
+<span class="sd">        :param person_id: The ID of the person to delete.</span>
+<span class="sd">        :type person_id: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;DELETE FROM Person WHERE id = ?&#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">person_id</span><span class="p">,))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PersonTable.upsert_row">
+<a class="viewcode-back" href="../db.html#db.PersonTable.upsert_row">[docs]</a>
+    <span class="k">def</span> <span class="nf">upsert_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">Student</span> <span class="o">|</span> <span class="n">Instructor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inserts or updates a row in the Person table.</span>
+
+<span class="sd">        :param row: A Student or Instructor object.</span>
+<span class="sd">        :type row: Student | Instructor</span>
+
+<span class="sd">        :raises AssertionError: If the provided row is not a Student or Instructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">Student</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">Instructor</span><span class="p">),</span> <span class="s2">&quot;Invalid Type.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">                INSERT INTO Person (id, name, age, email, courses, is_student)</span>
+<span class="s1">                VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET</span>
+<span class="s1">                                name=excluded.name,</span>
+<span class="s1">                                age=excluded.age,</span>
+<span class="s1">                                email=excluded.email,</span>
+<span class="s1">                                courses=excluded.courses,</span>
+<span class="s1">                                is_student=excluded.is_student</span>
+<span class="s1">                &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get_id</span><span class="p">(),</span> <span class="n">row</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span> <span class="n">row</span><span class="o">.</span><span class="n">get_age</span><span class="p">(),</span> <span class="n">row</span><span class="o">.</span><span class="n">get_email</span><span class="p">(),</span>
+                      <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get_courses</span><span class="p">())),</span> <span class="nb">int</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">Student</span><span class="p">))))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PersonTable.create_table">
+<a class="viewcode-back" href="../db.html#db.PersonTable.create_table">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the Person table in the database.</span>
+
+<span class="sd">        :param db_path: Path to the SQLite database file.</span>
+<span class="sd">        :type db_path: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">db_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">            CREATE TABLE IF NOT EXISTS Person (</span>
+<span class="s1">                id TEXT PRIMARY KEY,</span>
+<span class="s1">                name TEXT NOT NULL,</span>
+<span class="s1">                age TEXT NOT NULL,</span>
+<span class="s1">                email TEXT NOT NULL,</span>
+<span class="s1">                courses TEXT,</span>
+<span class="s1">                is_student INTEGER</span>
+<span class="s1">            )</span>
+<span class="s1">            &#39;&#39;&#39;</span><span class="p">)</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CourseTable">
+<a class="viewcode-back" href="../db.html#db.CourseTable">[docs]</a>
+<span class="k">class</span> <span class="nc">CourseTable</span><span class="p">(</span><span class="n">Table</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class representing the Course table in the database, inheriting from Table.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        - :meth:`query`: Queries the Course table.</span>
+<span class="sd">        - :meth:`delete_record`: Deletes a record from the Course table.</span>
+<span class="sd">        - :meth:`upsert_row`: Inserts or updates a row in the Course table.</span>
+<span class="sd">        - :meth:`create_table`: Creates the Course table in the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a CourseTable object and connects to the SQLite database.</span>
+
+<span class="sd">        :param db_path: Path to the SQLite database file.</span>
+<span class="sd">        :type db_path: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">db_path</span><span class="o">=</span><span class="n">db_path</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CourseTable.query">
+<a class="viewcode-back" href="../db.html#db.CourseTable.query">[docs]</a>
+    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Course</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Queries the Course table.</span>
+
+<span class="sd">        :returns: A dictionary mapping course IDs to Course objects.</span>
+<span class="sd">        :rtype: dict[str, Course]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SELECT * FROM Course&#39;</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">course</span> <span class="o">=</span> <span class="n">Course</span><span class="p">(</span><span class="n">course_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">course_name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">instructor_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">course</span><span class="o">.</span><span class="n">enrolled_students</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">course</span><span class="o">.</span><span class="n">course_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">course</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="CourseTable.delete_record">
+<a class="viewcode-back" href="../db.html#db.CourseTable.delete_record">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">course_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a record from the Course table.</span>
+
+<span class="sd">        :param course_id: The ID of the course to delete.</span>
+<span class="sd">        :type course_id: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;DELETE FROM Course WHERE course_id = ?&#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">course_id</span><span class="p">,))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="CourseTable.upsert_row">
+<a class="viewcode-back" href="../db.html#db.CourseTable.upsert_row">[docs]</a>
+    <span class="k">def</span> <span class="nf">upsert_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">Course</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inserts or updates a row in the Course table.</span>
+
+<span class="sd">        :param row: A Course object.</span>
+<span class="sd">        :type row: Course</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">                INSERT INTO Course (course_id, course_name, instructor_id, enrolled_students)</span>
+<span class="s1">                VALUES (?, ?, ?, ?)  ON CONFLICT(course_id) DO UPDATE SET</span>
+<span class="s1">                            course_name=excluded.course_name,</span>
+<span class="s1">                            instructor_id=excluded.instructor_id,</span>
+<span class="s1">                            enrolled_students=excluded.enrolled_students</span>
+<span class="s1">                &#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">get_id</span><span class="p">(),</span> <span class="n">row</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span> <span class="n">row</span><span class="o">.</span><span class="n">get_instructor</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get_enrolled_students</span><span class="p">()))))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="CourseTable.create_table">
+<a class="viewcode-back" href="../db.html#db.CourseTable.create_table">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the Course table in the database.</span>
+
+<span class="sd">        :param db_path: Path to the SQLite database file.</span>
+<span class="sd">        :type db_path: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">db_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                CREATE TABLE IF NOT EXISTS Course (</span>
+<span class="sd">                    course_id TEXT PRIMARY KEY,</span>
+<span class="sd">                    course_name TEXT NOT NULL,</span>
+<span class="sd">                    instructor_id TEXT,</span>
+<span class="sd">                    enrolled_students TEXT</span>
+<span class="sd">                )</span>
+<span class="sd">                &#39;&#39;&#39;</span>
+        <span class="p">)</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">course_table</span> <span class="o">=</span> <span class="n">CourseTable</span><span class="p">(</span><span class="s2">&quot;school.db&quot;</span><span class="p">)</span>
+    <span class="n">person_table</span> <span class="o">=</span> <span class="n">PersonTable</span><span class="p">(</span><span class="s2">&quot;school.db&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">course_table</span><span class="o">.</span><span class="n">query</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">person_table</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">is_student</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="c1"># print(course_table.delete_record(&quot;CS101&quot;))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">course_table</span><span class="o">.</span><span class="n">query</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Hashem Khodor.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
